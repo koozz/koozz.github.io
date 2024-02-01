@@ -2,17 +2,17 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Jan van den Berg - www.koozz.nl</title>
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<style type="text/css">
-		html {
-			overflow-y: scroll;
-		}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Jan van den Berg - www.koozz.nl</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <style type="text/css">
+    html {
+      overflow-y: scroll;
+    }
 
     body {
       color: black;
@@ -26,153 +26,114 @@
       }
     }
 
-		#main {
-			margin: 0 auto 0 auto;
-			padding: 0;
-			max-width: 24em;
-		}
+    #main {
+      font-family: press-start-2p;
+      font-size: 0.8rem;
+      line-height: 1.2rem;
+      margin: 0 auto 0 auto;
+      padding: 0;
+      max-width: 30em;
+    }
 
-		#title {
-			text-transform: uppercase;
-			font-size: 2rem;
-		}
+    #title {
+      font-family: press-start-2p;
+      font-size: 1.3rem;
+      line-height: 1.5rem;
+      text-transform: uppercase;
+    }
 
-		#introLink,
-		#portfolioLink,
-		#scriptsLink,
-		#contactLink {
-			color: darkgray;
-			padding-left: 0.2em;
-			padding-right: 0.2em;
-			text-decoration: none;
-		}
-
-		#intro,
-		#introNav,
-		#portfolio,
-		#portfolioNav,
-		#scripts,
-		#scriptsNav,
-		#contact,
-		#contactNav {
-			display: none;
-		}
-
-		#introNav:checked~#introLink {
-			text-decoration: underline;
-		}
-
-		#introNav:checked~#intro {
-			display: block;
-		}
-
-		#portfolioNav:checked~#portfolioLink {
-			text-decoration: underline;
-		}
-
-		#portfolioNav:checked~#portfolio {
-			display: block;
-		}
-
-		#scriptsNav:checked~#scriptsLink {
-			text-decoration: underline;
-		}
-
-		#scriptsNav:checked~#scripts {
-			display: block;
-		}
-
-		#contactNav:checked~#contactLink {
-			text-decoration: underline;
-		}
-
-		#contactNav:checked~#contact {
-			display: block;
-		}
-
-		a {
+    #aboutLink,
+    #contactLink {
       color: darkgray;
-			text-decoration: underline;
-		}
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      text-decoration: none;
+    }
 
-		a:hover {
-			color: red;
-		}
+    #about,
+    #aboutNav,
+    #contact,
+    #contactNav {
+      display: none;
+    }
 
-		.employer {
-			color: darkgray;
-			font-size: 1.0rem;
-		}
+    #aboutNav:checked~#aboutLink {
+      text-decoration: underline;
+    }
 
-		details {
-			font-size: 1.1rem;
-		}
+    #aboutNav:checked~#about {
+      display: block;
+    }
 
-		details>summary {
-			font-size: 1.5rem;
-		}
+    #contactNav:checked~#contactLink {
+      text-decoration: underline;
+    }
 
-		@font-face {
-			font-family: xkcd-script;
-			src: url('font/xkcd-script.woff') format('woff');
-		}
+    #contactNav:checked~#contact {
+      display: block;
+    }
 
-		.xkcd-script {
-			font-family: xkcd-script;
-			font-size: 1.6rem;
-			line-height: 150%;
-		}
-	</style>
+    a {
+      color: darkgray;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: red;
+    }
+
+    @font-face {
+      font-family: press-start-2p;
+      src: url('font/press-start-2p.ttf');
+    }
+  </style>
 </head>
 
 <body>
-	<div id="main">
-		<h1 id="title" class="xkcd-script">Jan van den Berg</h1>
+  <div id="main">
+    <h1 id="title">Jan van den Berg</h1>
 
-		<input id="introNav" name="subnav" type="radio" value="intro" checked />
-		<label id="introLink" for="introNav" class="xkcd-script">Intro</label>
+    <input id="aboutNav" name="subnav" type="radio" value="about" checked />
+    <label id="aboutLink" for="aboutNav">About me</label>
 
-		<input id="portfolioNav" name="subnav" type="radio" value="portfolio" />
-		<label id="portfolioLink" for="portfolioNav" class="xkcd-script">Portfolio</label>
+    <input id="contactNav" name="subnav" type="radio" value="contact"></input>
+    <label id="contactLink" for="contactNav" class="xkcd-script">Contact</label>
 
-		<input id="scriptsNav" name="subnav" type="radio" value="scripts" />
-		<label id="scriptsLink" for="scriptsNav" class="xkcd-script">Scripts</label>
-
-		<input id="contactNav" name="subnav" type="radio" value="contact"></input>
-		<label id="contactLink" for="contactNav" class="xkcd-script">Contact</label>
-
-		<div id="intro" class="xkcd-script">
-			<p>
-				I'm a software developer (/DevOps/SRE) living in the Netherlands.
-				I've been developing software for over 15 years.
-			</p>
-			<p>
-				I enjoy comics like <a href="https://xkcd.com/" target="_blank">xkcd</a> (hence the font),
-				reading <a href="https://news.ycombinator.com/" target="_blank">HackerNews</a>,
-				watching movies, gaming and spending time with my wife, son and daughter.
-			</p>
-		</div>
-		<div id="portfolio" class="xkcd-script">
-			<p>
-				During my career I've worked for several companies and even more clients.
-				You can download or view my Curriculum Vitae <a href="https://github.com/koozz/koozz/releases/download/latest/CV-Jan_van_den_Berg.pdf">here</a>.
-			</p>
-		</div>
-		<div id="scripts" class="xkcd-script">
-			<p>
-				My <a href="https://github.com/koozz/dotfiles" target="_blank">dotfiles</a> contain scripts, aliases and functions.<br />
-			</p>
+    <div id="about">
       <p>
-        The .Brewfile is my everchanging list of packages I'd like to boot with.
+        Hi there! I am from the Netherlands. I was born in 1983 and started playing around with computers as soon
+        as we got an Amstrad CPC. I have been scripting ever since I was a little kid, this evolved into software
+        development at a later stage.
       </p>
-		</div>
-		<div id="contact" class="xkcd-script">
-			<p>
-				Need another way to get in contact? Try
-				<a href="https://www.linkedin.com/in/koozz" target="_blank">LinkedIn</a>.
-			</p>
-		</div>
-	</div>
+      <p>
+        My professional career started in 2001 as a Webmaster, switched in 2003 to Network Services Administrator,
+        switched again in 2007 to Software Developer where I worked on numerous JVM based projects. Became an Site
+        Reliability Engineer in 2020 and moved on to a Staff Engineer in 2024.
+      </p>
+      <p>
+        At home I enjoy spending time with my wife, son and daughter, watching series and movies, listening to music and
+        playing games on the computer and console.
+      </p>
+      <p>
+        I am a quick learner, especially on IT matters and I like to keep myself busy keeping my knowledge up-to-date:
+      <ul>
+        <li>Experiencing with other programming languages like C, Haskell, Go, Rust, TypeScript and Zig.</li>
+        <li>Picking up topics like Machine Learning and Deep Learning.</li>
+        <li>Scratching the surface of eBPF (networking and security).</li>
+      </ul>
+      </p>
+    </div>
+    <div id="contact">
+      <p>
+        Need to get in touch? Try:
+      <ul>
+        <li><a href="https://discord.com/invite/qkj62jt8Mg" target="_blank">Discord</a></li>
+        <li><a href="https://github.com/koozz" target="_blank">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/koozz" target="_blank">LinkedIn</a></li>
+      </ul>
+      </p>
+    </div>
+  </div>
 </body>
 
 </html>
