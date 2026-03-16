@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>KOOZZ(5) - Configuration</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="style.css">
+    <link rel="prev" href="italian.html">
+    <link rel="next" href="games.html">
+    <link rel="prefetch" href="index.html">
+    <link rel="prefetch" href="italian.html">
+    <link rel="prefetch" href="games.html">
+  </head>
+  <body>
+    <div class="man-page">
+      <div class="man-header">
+        <span><a href="italian.html">&#8249; KOOZZ(4)</a></span>
+        <span>Configuration</span>
+        <span><a href="games.html">KOOZZ(6) &#8250;</a></span>
+      </div>
+
+      <div class="section-heading">NAME</div>
+      <div class="section-body">
+        <p><b>koozz-config</b> &mdash; editor and dotfiles configuration</p>
+      </div>
+
+      <div class="section-heading">SYNOPSIS</div>
+      <div class="section-body">
+        <p class="synopsis">nvim <span class="synopsis-arg">[file ...]</span></p>
+      </div>
+
+      <div class="section-heading">DESCRIPTION</div>
+      <div class="section-body">
+        <p>
+          Primary editor is <b>Neovim</b>. Configuration is always in
+          flux &mdash; plugins come and go, keybindings shift, and the
+          colorscheme changes with the seasons.
+        </p>
+        <p>
+          Terminal emulator is <b>Ghostty</b>, a GPU-accelerated terminal
+          that is fast, feature-rich, and native on both macOS and Linux.
+        </p>
+      </div>
+
+      <div class="section-heading">FILES</div>
+      <div class="section-body">
+        <div class="entry">
+          <div class="entry-label">~/.config/nvim/init.lua</div>
+          <p>
+            Main Neovim configuration file. The latest version is hosted at
+            <a href="https://codeberg.org/koozz/dotfiles/src/branch/main/.config/nvim/init.lua">codeberg.org/koozz/dotfiles</a>.
+          </p>
+        </div>
+        <div class="entry">
+          <div class="entry-label">~/.config/ghostty/config</div>
+          <p>Ghostty terminal configuration.</p>
+        </div>
+      </div>
+
+      <div class="section-heading">ENVIRONMENT</div>
+      <div class="section-body">
+        <ul>
+          <li><b>EDITOR</b>=nvim</li>
+          <li><b>SHELL</b>=/opt/homebrew/bin/fish</li>
+          <li><b>TERM</b>=ghostty</li>
+        </ul>
+      </div>
+
+      <div class="section-heading">SEE ALSO</div>
+      <div class="section-body">
+        <p>
+          <a href="contrib.html">koozz(3)</a>,
+          <a href="italian.html">koozz(4)</a>,
+          <b>koozz(5)</b>,
+          <a href="games.html">koozz(6)</a>,
+          <a href="index.html">koozz(7)</a>
+          <br>
+          <a href="https://codeberg.org/koozz/dotfiles">codeberg.org/koozz/dotfiles</a>
+        </p>
+      </div>
+
+      <div class="man-footer">
+        <span>www.koozz.nl</span>
+        <span>May 2026</span>
+        <span>KOOZZ(5)</span>
+      </div>
+    </div>
+  </body>
+</html>
