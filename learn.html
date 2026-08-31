@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>KOOZZ - Italian quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="prev" href="italian.html">
+    <link rel="next" href="index.html">
+    <style>
+      .quiz { border: 1px solid var(--dim); padding: 1em; max-width: 60ch; }
+      .prompt { color: var(--bold); font-size: 1.25em; margin-bottom: 1em; }
+      .answers { display: grid; gap: 0.5em; }
+      .answers button, .control { font: inherit; color: var(--fg); background: transparent; border: 1px solid var(--dim); padding: 0.65em 1em; text-align: left; cursor: pointer; }
+      .answers button.next { display: flex; width: 100%; }
+      .answers button.next::after { content: '>>'; margin-left: auto; }
+      .answers button:hover, .answers button:focus-visible, .control:hover, .control:focus-visible { color: var(--bold); border-color: var(--link); }
+      .answers button.correct { border-color: #009246; color: #009246; }
+      .answers button.wrong { border-color: #ce2b37; color: #ce2b37; }
+      .speak { margin-top: 1em; }
+      .status { min-height: 1.5em; margin-top: 1em; }
+      .status.good { color: #009246; } .status.bad { color: #ce2b37; }
+      .quiz-meta { color: var(--dim); margin-top: 0.75em; }
+      .controls { display: flex; gap: 1em; margin-top: 1em; align-items: center; }
+      @media (max-width: 55ch) { .section-body { padding-left: 0; } }
+    </style>
+  </head>
+  <body>
+    <div class="man-page">
+      <div class="man-header">
+        <span><a href="italian.html">&#8249; KOOZZ(4)</a></span>
+        <span>Italian-Dutch</span>
+        <span><a href="index.html">KOOZZ(7) &#8250;</a></span>
+      </div>
+
+      <div class="section-heading">NAME</div>
+      <div class="section-body"><p><b>koozz-learn</b> &mdash; spaced-repetition Italian-Dutch quiz</p></div>
+
+      <div class="section-heading">QUIZ</div>
+      <div class="section-body">
+        <div class="quiz" aria-live="polite">
+          <div id="prompt" class="prompt">Loading vocabulary&hellip;</div>
+          <div id="answers" class="answers"></div>
+          <button id="speak" class="control speak" type="button" aria-label="Pronounce the Italian word">🔊 Pronounce</button>
+          <div id="status" class="status" role="status"></div>
+          <div id="meta" class="quiz-meta"></div>
+
+        </div>
+      </div>
+
+      <div class="section-heading">STORAGE</div>
+      <div class="section-body">
+        <p>Progress stays in this browser. The vocabulary comes from <a href="learn.json">learn.json</a>.</p>
+        <div class="controls">
+          <button id="reset" class="control" type="button">Reset progress</button>
+        </div>
+      </div>
+
+      <div class="section-heading">SEE ALSO</div>
+      <div class="section-body"><p><a href="italian.html">koozz(4)</a>, <b>koozz(8)</b>, <a href="games.html">koozz(6)</a>, <a href="index.html">koozz(7)</a></p></div>
+
+      <div class="man-footer"><span>www.koozz.nl</span><span>May 2026</span><span>KOOZZ(8)</span></div>
+    </div>
+
+    <script>
+      (() => {
+        'use strict';
+        // Change these constants to tune the review schedule.
+        const BASE_INTERVAL_DAYS = 1;
+        const MAX_INTERVAL_DAYS = 365;
+        const STORAGE_KEY = 'koozz-italian-dutch-progress';
+        const DAY = 24 * 60 * 60 * 1000;
+        const promptElement = document.querySelector('#prompt');
+        const answersElement = document.querySelector('#answers');
+        const statusElement = document.querySelector('#status');
+        const metaElement = document.querySelector('#meta');
+        const speakButton = document.querySelector('#speak');
+
+        let words = [];
+        let progress = readProgress();
+        let current = null;
+        let answered = false;
+        let italianPrompt = false;
+
+        function italianVoice() {
+          if (!('speechSynthesis' in window)) return null;
+          const voices = window.speechSynthesis.getVoices();
+          return voices.find(voice => voice.lang.toLowerCase() === 'it-it')
+            || voices.find(voice => voice.lang.toLowerCase().startsWith('it'))
+            || null;
+        }
+        function speakItalian(text) {
+          if (!('speechSynthesis' in window) || !text) return;
+          window.speechSynthesis.cancel();
+          const spokenText = text.split('/')[0].trim();
+          const utterance = new SpeechSynthesisUtterance(spokenText);
+          utterance.lang = 'it-IT';
+          utterance.voice = italianVoice();
+          window.speechSynthesis.speak(utterance);
+        }
+        function speakCurrent() {
+          if (current) speakItalian(current.italian);
+        }
+
+        function readProgress() {
+          try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+          catch (_) { return {}; }
+        }
+        function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+        function today() { return new Date().toISOString().slice(0, 10); }
+        function intervalDays(item) {
+          const count = Math.max(1, Number(progress[item.id]?.correct) || 1);
+          return Math.min(MAX_INTERVAL_DAYS, BASE_INTERVAL_DAYS * (2 ** (count - 1)));
+        }
+        function due(item) {
+          const last = progress[item.id]?.lastCorrect;
+          return !last || Date.now() >= Date.parse(last + 'T00:00:00Z') + intervalDays(item) * DAY;
+        }
+        function choose(list) { return list[Math.floor(Math.random() * list.length)]; }
+        function shuffle(list) {
+          for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+          return list;
+        }
+        function makeQuestion() {
+          const dueWords = words.filter(due);
+          if (!dueWords.length) {
+            current = null;
+            promptElement.textContent = 'All caught up.';
+            answersElement.replaceChildren();
+            statusElement.textContent = 'No word is due yet. Come back when the next review interval has passed.';
+            statusElement.className = 'status';
+            metaElement.textContent = `${words.length} words in your review schedule`;
+            answered = true;
+            return;
+          }
+          current = choose(dueWords);
+          const sameCategory = words.filter(item => item.category === current.category && item.id !== current.id);
+          const wrong = shuffle(sameCategory.slice()).slice(0, 3);
+          const options = shuffle([current, ...wrong]);
+          italianPrompt = Math.random() < 0.5;
+          promptElement.textContent = italianPrompt ? `🇳🇱 Wat betekent "${current.italian}"?` : `🇮🇹 Cosa significa "${current.dutch}"?`;
+          answersElement.replaceChildren(...options.map(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = italianPrompt ? `${option.dutch}` : `${option.italian}`;
+            button.dataset.correct = option === current;
+            button.addEventListener('click', () => answer(button, option === current));
+            return button;
+          }));
+          statusElement.textContent = '';
+          statusElement.className = 'status';
+          metaElement.textContent = `${current.category} · correct ${progress[current.id]?.correct || 0}x · ${dueWords.length} due`;
+          answered = false;
+          if (italianPrompt) speakCurrent();
+        }
+        function answer(button, correct) {
+          if (answered) {
+            if (correct) makeQuestion();
+            return;
+          }
+          answered = true;
+          const correctButton = answersElement.querySelector('button[data-correct="true"]');
+          if (correct) {
+            const record = progress[current.id] || { correct: 0 };
+            record.correct = (Number(record.correct) || 0) + 1;
+            record.lastCorrect = today();
+            progress[current.id] = record;
+            saveProgress();
+            button.classList.add('correct');
+            statusElement.textContent = `Correct. Confirm to continue. Next review in ${intervalDays(current)} day${intervalDays(current) === 1 ? '' : 's'}.`;
+            statusElement.className = 'status good';
+          } else {
+            button.classList.add('wrong');
+            correctButton.classList.add('correct');
+            statusElement.textContent = `Not quite. Confirm the green answer to continue.`;
+            statusElement.className = 'status bad';
+          }
+          correctButton.classList.add('next');
+          answersElement.querySelectorAll('button').forEach(candidate => { candidate.disabled = candidate !== correctButton; });
+          if (!italianPrompt) speakItalian(current.italian);
+        }
+        async function load() {
+          try {
+            const response = await fetch('learn.json', { cache: 'no-store' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            words = data.categories.flatMap(category => Object.entries(category.words).map(([italian, dutch]) => ({
+              id: `${category.name}:${italian}`, category: category.name, italian, dutch
+            })));
+            if (words.length < 4 || data.categories.some(category => Object.keys(category.words).length < 4)) throw new Error('Each category needs at least four words');
+            makeQuestion();
+          } catch (error) {
+            promptElement.textContent = 'Vocabulary could not be loaded.';
+            statusElement.textContent = `${error.message} Serve this directory over HTTP; fetch is not available from file:// pages.`;
+          }
+        }
+
+        document.querySelector('#reset').addEventListener('click', () => {
+          if (window.confirm('Reset all Italian-Dutch quiz progress?')) { progress = {}; saveProgress(); makeQuestion(); }
+        });
+        speakButton.addEventListener('click', speakCurrent);
+        if (!('speechSynthesis' in window)) speakButton.hidden = true;
+        load();
+      })();
+    </script>
+  </body>
+</html>
