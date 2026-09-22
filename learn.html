@@ -94,7 +94,8 @@
         function speakItalian(text) {
           if (!('speechSynthesis' in window) || !text) return;
           window.speechSynthesis.cancel();
-          const spokenText = text.split('/')[0].trim();
+          const textAfterColon = text.includes(':') ? text.slice(text.indexOf(':') + 1) : text;
+          const spokenText = textAfterColon.split('/')[0].trim();
           const utterance = new SpeechSynthesisUtterance(spokenText);
           utterance.lang = 'it-IT';
           utterance.voice = italianVoice();
@@ -140,10 +141,18 @@
             return;
           }
           current = choose(dueWords);
-          const sameCategory = words.filter(item => item.category === current.category && item.id !== current.id);
-          const wrong = shuffle(sameCategory.slice()).slice(0, 3);
-          const options = shuffle([current, ...wrong]);
           italianPrompt = Math.random() < 0.5;
+          const answerText = item => (italianPrompt ? item.dutch : item.italian).trim().replace(/\s+/g, ' ');
+          const sameCategory = words.filter(item => item.category === current.category && item.id !== current.id);
+          const otherCategories = words.filter(item => item.category !== current.category && item.id !== current.id);
+          const usedAnswerText = new Set([answerText(current)]);
+          const wrong = [...shuffle(sameCategory), ...shuffle(otherCategories)].filter(option => {
+            const text = answerText(option);
+            if (usedAnswerText.has(text)) return false;
+            usedAnswerText.add(text);
+            return true;
+          }).slice(0, 3);
+          const options = shuffle([current, ...wrong]);
           promptElement.textContent = italianPrompt ? `🇳🇱 Wat betekent "${current.italian}"?` : `🇮🇹 Cosa significa "${current.dutch}"?`;
           answersElement.replaceChildren(...options.map(option => {
             const button = document.createElement('button');
